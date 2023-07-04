@@ -1,24 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+// import Users from "./components/Users";
+import "./App.css";
+import ManageUser from "./components/ManageUser";
+import UserProvider from "./contexts/UserProvider";
+import useDimension from "./hooks/useDimension";
+import TodoList from "./components/TodoList";
+const Users = React.lazy(() => import("./components/Users"));
 
 function App() {
+  const [width, height] = useDimension();
+
+  console.log("browser dimension", width, height);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <UserProvider>
+      <Suspense fallback={<div>Loading....</div>}>
+        <Router>
+          <Switch>
+            <Route path="/" exact>
+              <TodoList />
+            </Route>
+            <Route path="/" exact>
+              <Users />
+            </Route>
+            <Route path="/:id">
+              <ManageUser />
+            </Route>
+          </Switch>
+        </Router>
+      </Suspense>
+    </UserProvider>
   );
 }
 
